@@ -4,7 +4,9 @@ import ru.practicum.StatDto;
 import ru.practicum.model.Stat;
 
 public class StatMapper {
-    private StatMapper() {}
+    private StatMapper() {
+
+    }
 
     public static StatDto toStatDto(Stat stat) {
         return StatDto.builder()

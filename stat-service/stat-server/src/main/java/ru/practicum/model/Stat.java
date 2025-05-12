@@ -1,12 +1,18 @@
 package ru.practicum.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
-@AllArgsConstructor
+@Setter
 public class Stat {
-    private final String app;
-    private final String uri;
-    private final Long hits;
+    private String app;
+    private String uri;
+    private Long hits;
+
+    public Stat(String app, String uri, Long hits) {
+        this.app = app;
+        this.uri = uri;
+        this.hits = hits;
+    }
 }

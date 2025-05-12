@@ -1,4 +1,4 @@
-package ru.practicum;
+package ru.practicum.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,4 +14,14 @@ public class HitDto {
     private String uri;
     private String ip;
     private String timestamp;
+
+    @Override
+    public String toString() {
+        return "HitDto{" +
+                "app='" + app + '\'' +
+                ", uri='" + uri + '\'' +
+                ", ip='" + ip + '\'' +
+                ", timestamp='" + timestamp + '\'' +
+                '}';
+    }
 }

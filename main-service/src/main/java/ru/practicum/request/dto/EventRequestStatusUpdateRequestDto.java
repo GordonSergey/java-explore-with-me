@@ -5,19 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RequestDto {
+public class EventRequestStatusUpdateRequestDto {
 
-    private Long id;
-
-    private Long event;
-
-    private Long requester;
+    private List<Long> requestIds;
 
     private String status;
-
-    private String created;
 }

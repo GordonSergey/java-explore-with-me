@@ -18,6 +18,6 @@ public class UpdateCompilationRequestDto {
 
     private Boolean pinned;
 
-    @Size(min = 1, max = 50, message = "Title must be between 1 and 50 characters")
+    @Size(min = 1, max = 50, message = "Заголовок должен содержать от 1 до 50 символов")
     private String title;
 }

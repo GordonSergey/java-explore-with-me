@@ -16,25 +16,25 @@ import ru.practicum.location.dto.LocationDto;
 @AllArgsConstructor
 public class NewEventDto {
 
-    @NotBlank(message = "Title must not be blank")
-    @Size(min = 3, max = 120, message = "Title must be between 3 and 120 characters")
+    @NotBlank(message = "Заголовок не должен быть пустым")
+    @Size(min = 3, max = 120, message = "Заголовок должен содержать от 3 до 120 символов")
     private String title;
 
-    @NotBlank(message = "Annotation must not be blank")
-    @Size(min = 20, max = 2000, message = "Annotation must be between 20 and 2000 characters")
+    @NotBlank(message = "Аннотация не должна быть пустой")
+    @Size(min = 20, max = 2000, message = "Аннотация должна содержать от 20 до 2000 символов")
     private String annotation;
 
-    @PositiveOrZero(message = "Category ID must be zero or positive")
+    @PositiveOrZero(message = "ID категории должен быть нулевым или положительным")
     private long category;
 
-    @NotBlank(message = "Description must not be blank")
-    @Size(min = 20, max = 7000, message = "Description must be between 20 and 7000 characters")
+    @NotBlank(message = "Описание не должно быть пустым")
+    @Size(min = 20, max = 7000, message = "Описание должно содержать от 20 до 7000 символов")
     private String description;
 
-    @NotNull(message = "Event date must not be null")
+    @NotNull(message = "Дата события не должна быть null")
     private String eventDate;
 
-    @NotNull(message = "Location must not be null")
+    @NotNull(message = "Локация не должна быть null")
     private LocationDto location;
 
     @Builder.Default

@@ -14,15 +14,15 @@ import ru.practicum.location.dto.LocationDto;
 @AllArgsConstructor
 public class UpdateEventUserRequestDto {
 
-    @Size(min = 3, max = 120, message = "Title must be between 3 and 120 characters")
+    @Size(min = 3, max = 120, message = "Название должно содержать от 3 до 120 символов")
     private String title;
 
-    @Size(min = 20, max = 2000, message = "Annotation must be between 20 and 2000 characters")
+    @Size(min = 20, max = 2000, message = "Аннотация должна содержать от 20 до 2000 символов")
     private String annotation;
 
     private Long category;
 
-    @Size(min = 20, max = 7000, message = "Description must be between 20 and 7000 characters")
+    @Size(min = 20, max = 7000, message = "Описание должно содержать от 20 до 7000 символов")
     private String description;
 
     private String eventDate;

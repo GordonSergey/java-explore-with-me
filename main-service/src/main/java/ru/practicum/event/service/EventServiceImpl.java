@@ -30,6 +30,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static ru.practicum.event.mapper.EventMapper.toEvent;
@@ -94,7 +95,7 @@ public class EventServiceImpl implements EventService {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
 
-        if (event.getInitiator().getId() != userId) {
+        if (!Objects.equals(event.getInitiator().getId(), userId)) {
             throw new ForbiddenException("Только инициатор может изменить событие");
         }
 
@@ -237,7 +238,7 @@ public class EventServiceImpl implements EventService {
     public List<EventShortDto> getPublishedEvents(String text, List<Long> categories, Boolean paid,
                                                   String rangeStart, String rangeEnd, boolean onlyAvailable,
                                                   String sort, int from, int size, HttpServletRequest request) {
-        sendHit(request, "ewm-main-service");
+        sendHit(request);
 
         LocalDateTime start = null;
         LocalDateTime end = null;
@@ -269,7 +270,7 @@ public class EventServiceImpl implements EventService {
         if (onlyAvailable) {
             events = events.stream()
                            .filter(event -> EventMapper.countConfirmedRequests(event.getRequests()) < event.getParticipantLimit())
-                           .collect(Collectors.toList());
+                           .toList();
         }
 
         List<EventShortDto> dtos = events.stream()
@@ -296,7 +297,7 @@ public class EventServiceImpl implements EventService {
 
         int previousHits = getHits(request);
         log.info("Получаем текущее количество просмотров: {}", previousHits);
-        sendHit(request, "ewm-main-service");
+        sendHit(request);
 
         int newHits = getHits(request);
         log.info("Получаем обновлённое количество просмотров: {}", newHits);
@@ -309,9 +310,9 @@ public class EventServiceImpl implements EventService {
         return toEventFullDto(event);
     }
 
-    private void sendHit(HttpServletRequest request, String appName) {
+    private void sendHit(HttpServletRequest request) {
         statClient.addHit(HitDto.builder()
-                                .app(appName)
+                                .app("ewm-main-service")
                                 .uri(request.getRequestURI())
                                 .ip(request.getRemoteAddr())
                                 .timestamp(LocalDateTime.now().format(formatter))

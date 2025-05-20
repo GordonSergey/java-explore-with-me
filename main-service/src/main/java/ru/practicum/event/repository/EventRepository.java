@@ -23,19 +23,19 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @Query(value = """
             SELECT * FROM events e
-            WHERE (:userId IS NULL OR e.initiator_id IN (CAST(CAST(:userId AS TEXT) AS BIGINT)))
-              AND (:states IS NULL OR e.state IN (CAST(:states AS TEXT)))
-              AND (:categories IS NULL OR e.category_id IN (CAST(CAST(:categories AS TEXT) AS BIGINT)))
-              AND (CAST(:rangeStart AS timestamp) IS NULL OR e.event_date >= CAST(:rangeStart AS timestamp))
-              AND (CAST(:rangeEnd AS timestamp) IS NULL OR e.event_date < CAST(:rangeEnd AS timestamp))
-            """,
-           nativeQuery = true)
-    List<Event> findEvents(@Param("userId") List<Long> userId,
-                           @Param("states") List<String> states,
-                           @Param("categories") List<Long> categories,
-                           @Param("rangeStart") LocalDateTime rangeStart,
-                           @Param("rangeEnd") LocalDateTime rangeEnd,
-                           Pageable pageable);
+            WHERE (CAST(:users AS TEXT) IS NULL OR e.initiator_id IN (:users))
+            AND (CAST(:states AS TEXT) IS NULL OR e.state IN (:states))
+            AND (CAST(:categories AS TEXT) IS NULL OR e.category_id IN (:categories))
+            AND (CAST(:rangeStart AS TEXT) IS NULL OR e.event_date >= :rangeStart)
+            AND (CAST(:rangeEnd AS TEXT) IS NULL OR e.event_date <= :rangeEnd)
+            """, nativeQuery = true)
+    List<Event> findEvents(
+            @Param("users") List<Long> users,
+            @Param("states") List<String> states,
+            @Param("categories") List<Long> categories,
+            @Param("rangeStart") LocalDateTime rangeStart,
+            @Param("rangeEnd") LocalDateTime rangeEnd,
+            Pageable pageable);
 
     @Query(value = """
             SELECT * FROM events e

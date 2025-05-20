@@ -7,14 +7,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.dto.HitDto;
 import ru.practicum.StatClient;
-import ru.practicum.dto.StatDto;
 import ru.practicum.category.model.Category;
 import ru.practicum.category.repository.CategoryRepository;
+import ru.practicum.dto.HitDto;
+import ru.practicum.dto.StatDto;
 import ru.practicum.event.dto.*;
 import ru.practicum.event.mapper.EventMapper;
-import ru.practicum.event.model.*;
+import ru.practicum.event.model.Event;
+import ru.practicum.event.model.EventState;
+import ru.practicum.event.model.StateAdminAction;
+import ru.practicum.event.model.StateUserAction;
 import ru.practicum.event.repository.EventRepository;
 import ru.practicum.exceptions.*;
 import ru.practicum.location.model.Location;
@@ -24,7 +27,9 @@ import ru.practicum.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.time.format.DateTimeParseException;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static ru.practicum.event.mapper.EventMapper.toEvent;
@@ -191,15 +196,41 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventFullDto> getEventsByAdmin(List<Long> users, List<String> states, List<Long> categories, String rangeStart, String rangeEnd, int from, int size) {
+    public List<EventFullDto> getEventsByAdmin(List<Long> users, List<String> states,
+                                               List<Long> categories, String rangeStart,
+                                               String rangeEnd, int from, int size) {
+        LocalDateTime start = parseDateTime(rangeStart);
+        LocalDateTime end = parseDateTime(rangeEnd);
+
+        List<String> validStates = states != null ?
+                states.stream()
+                      .map(String::toUpperCase)
+                      .collect(Collectors.toList()) :
+                null;
+
         List<Event> events = eventRepository.findEvents(
-                users, states, categories,
-                rangeStart != null ? LocalDateTime.parse(rangeStart, formatter) : null,
-                rangeEnd != null ? LocalDateTime.parse(rangeEnd, formatter) : null,
+                users,
+                validStates,
+                categories,
+                start,
+                end,
                 PageRequest.of(from / size, size)
                                                        );
 
-        return events.stream().map(EventMapper::toEventFullDto).collect(Collectors.toList());
+        return events.stream()
+                     .map(EventMapper::toEventFullDto)
+                     .collect(Collectors.toList());
+    }
+
+    private LocalDateTime parseDateTime(String dateTimeStr) {
+        if (dateTimeStr == null) {
+            return null;
+        }
+        try {
+            return LocalDateTime.parse(dateTimeStr, formatter);
+        } catch (DateTimeParseException e) {
+            throw new ValidationRequestException("Неверный формат даты. Ожидается: yyyy-MM-dd HH:mm:ss");
+        }
     }
 
     @Override
@@ -264,8 +295,11 @@ public class EventServiceImpl implements EventService {
                                      .orElseThrow(() -> new EventNotFoundException(eventId));
 
         int previousHits = getHits(request);
+        log.info("Получаем текущее количество просмотров: {}", previousHits);
         sendHit(request, "ewm-main-service");
+
         int newHits = getHits(request);
+        log.info("Получаем обновлённое количество просмотров: {}", newHits);
 
         if (newHits > previousHits) {
             event.setViews(event.getViews() + 1);

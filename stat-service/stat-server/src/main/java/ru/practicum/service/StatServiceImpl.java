@@ -3,8 +3,9 @@ package ru.practicum.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.HitDto;
-import ru.practicum.StatDto;
+import ru.practicum.dto.HitDto;
+import ru.practicum.dto.StatDto;
+import ru.practicum.exceptions.ValidationRequestException;
 import ru.practicum.mapper.StatMapper;
 import ru.practicum.model.Stat;
 import ru.practicum.repository.StatRepository;
@@ -32,6 +33,9 @@ public class StatServiceImpl implements StatService {
     public List<StatDto> getStats(LocalDateTime start, LocalDateTime end, String[] uris, boolean unique) {
         List<Stat> stats;
 
+        if (start.isAfter(end)) {
+            throw new ValidationRequestException("Параметр 'start' не может быть позже параметра 'end'.");
+        }
         if (uris == null || uris.length == 0) {
             stats = unique
                     ? statRepository.findAllStatsUnique(start, end)

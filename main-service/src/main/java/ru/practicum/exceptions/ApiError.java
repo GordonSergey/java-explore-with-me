@@ -1,17 +1,21 @@
-package ru.practicum;
+package ru.practicum.exceptions;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Getter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class HitDto {
-    private String app;
-    private String uri;
-    private String ip;
+public class ApiError {
+
+    private String status;
+
+    private String reason;
+
+    private String message;
+
     private String timestamp;
 }

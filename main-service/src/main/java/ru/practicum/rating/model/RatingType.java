@@ -1,4 +1,6 @@
 package ru.practicum.rating.model;
 
-public class RatingType {
+public enum RatingType {
+    LIKE,
+    DISLIKE
 }

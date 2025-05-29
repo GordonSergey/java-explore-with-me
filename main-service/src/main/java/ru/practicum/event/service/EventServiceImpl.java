@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,10 +15,7 @@ import ru.practicum.dto.HitDto;
 import ru.practicum.dto.StatDto;
 import ru.practicum.event.dto.*;
 import ru.practicum.event.mapper.EventMapper;
-import ru.practicum.event.model.Event;
-import ru.practicum.event.model.EventState;
-import ru.practicum.event.model.StateAdminAction;
-import ru.practicum.event.model.StateUserAction;
+import ru.practicum.event.model.*;
 import ru.practicum.event.repository.EventRepository;
 import ru.practicum.exceptions.*;
 import ru.practicum.location.model.Location;
@@ -30,11 +28,12 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static ru.practicum.event.mapper.EventMapper.toEvent;
 import static ru.practicum.event.mapper.EventMapper.toEventFullDto;
+import static ru.practicum.event.model.EventSort.EVENT_DATE;
+import static ru.practicum.event.model.EventSort.VIEWS;
 import static ru.practicum.location.mapper.LocationMapper.toLocation;
 
 @Service
@@ -95,7 +94,7 @@ public class EventServiceImpl implements EventService {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
 
-        if (!Objects.equals(event.getInitiator().getId(), userId)) {
+        if (event.getInitiator().getId() != userId) {
             throw new ForbiddenException("Только инициатор может изменить событие");
         }
 
@@ -238,7 +237,7 @@ public class EventServiceImpl implements EventService {
     public List<EventShortDto> getPublishedEvents(String text, List<Long> categories, Boolean paid,
                                                   String rangeStart, String rangeEnd, boolean onlyAvailable,
                                                   String sort, int from, int size, HttpServletRequest request) {
-        sendHit(request);
+        sendHit(request, "ewm-main-service");
 
         LocalDateTime start = null;
         LocalDateTime end = null;
@@ -250,11 +249,11 @@ public class EventServiceImpl implements EventService {
             if (rangeEnd != null) {
                 end = LocalDateTime.parse(rangeEnd, formatter);
             }
-        } catch (Exception e) {
+        } catch (DateTimeParseException e) {
             throw new ValidationRequestException("Неверный формат даты. Ожидается: yyyy-MM-dd HH:mm:ss");
         }
 
-        if (start != null && end != null && start.isAfter(end)) {
+        if (start != null && end != null && !start.isBefore(end)) {
             throw new ValidationRequestException("Дата начала должна быть раньше даты окончания.");
         }
 
@@ -270,7 +269,7 @@ public class EventServiceImpl implements EventService {
         if (onlyAvailable) {
             events = events.stream()
                            .filter(event -> EventMapper.countConfirmedRequests(event.getRequests()) < event.getParticipantLimit())
-                           .toList();
+                           .collect(Collectors.toList());
         }
 
         List<EventShortDto> dtos = events.stream()
@@ -278,12 +277,16 @@ public class EventServiceImpl implements EventService {
                                          .collect(Collectors.toList());
 
         if (sort != null) {
-            if (sort.equals("EVENT_DATE")) {
-                dtos.sort(Comparator.comparing(EventShortDto::getEventDate));
-            } else if (sort.equals("VIEWS")) {
-                dtos.sort(Comparator.comparing(EventShortDto::getViews));
-            } else {
-                throw new ValidationRequestException("Неверный параметр сортировки.");
+            EventSort eventSort;
+            try {
+                eventSort = EventSort.valueOf(sort.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new ValidationRequestException("Неверный параметр сортировки: " + sort);
+            }
+
+            switch (eventSort) {
+                case EVENT_DATE -> dtos.sort(Comparator.comparing(EventShortDto::getEventDate));
+                case VIEWS -> dtos.sort(Comparator.comparing(EventShortDto::getViews));
             }
         }
 
@@ -297,7 +300,7 @@ public class EventServiceImpl implements EventService {
 
         int previousHits = getHits(request);
         log.info("Получаем текущее количество просмотров: {}", previousHits);
-        sendHit(request);
+        sendHit(request, "ewm-main-service");
 
         int newHits = getHits(request);
         log.info("Получаем обновлённое количество просмотров: {}", newHits);
@@ -310,9 +313,20 @@ public class EventServiceImpl implements EventService {
         return toEventFullDto(event);
     }
 
-    private void sendHit(HttpServletRequest request) {
+    @Override
+    public List<EventShortDto> getTopRatedPublishedEvents(int from, int size) {
+
+        PageRequest pageable = PageRequest.of(from / size, size, Sort.by(Sort.Direction.DESC, "rating"));
+
+        List<Event> events = eventRepository.findAllPublishedEvents(pageable); // ← более гибкий метод
+        return events.stream()
+                     .map(EventMapper::toEventShortDto)
+                     .collect(Collectors.toList());
+    }
+
+    private void sendHit(HttpServletRequest request, String appName) {
         statClient.addHit(HitDto.builder()
-                                .app("ewm-main-service")
+                                .app(appName)
                                 .uri(request.getRequestURI())
                                 .ip(request.getRemoteAddr())
                                 .timestamp(LocalDateTime.now().format(formatter))

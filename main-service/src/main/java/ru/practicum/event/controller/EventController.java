@@ -83,4 +83,11 @@ public class EventController {
                                               HttpServletRequest request) {
         return eventService.getPublishedEventById(id, request);
     }
+
+    @GetMapping("/top-rated")
+    public List<EventShortDto> getTopRatedEvents(
+            @RequestParam(defaultValue = "0") int from,
+            @RequestParam(defaultValue = "10") int size) {
+        return eventService.getTopRatedPublishedEvents(from, size);
+    }
 }

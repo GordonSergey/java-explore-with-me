@@ -3,6 +3,7 @@ package ru.practicum.exceptions;
 import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.category.controller.CategoryController;
 import ru.practicum.compilation.controller.CompilationController;
 import ru.practicum.event.controller.EventController;
+import ru.practicum.rating.controller.RatingController;
 import ru.practicum.request.controller.RequestController;
 import ru.practicum.user.controller.UserController;
 
@@ -21,7 +23,8 @@ import java.time.format.DateTimeFormatter;
         CategoryController.class,
         EventController.class,
         RequestController.class,
-        CompilationController.class
+        CompilationController.class,
+        RatingController.class
 })
 public class ErrorHandler {
 
@@ -55,6 +58,12 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handleConstraintViolationException(ConstraintViolationException e) {
         return buildApiError("CONFLICT", "Integrity constraint has been violated.", e.getMessage());
+    }
+
+    @ExceptionHandler({IllegalArgumentException.class, HttpMessageNotReadableException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleIllegalOrUnreadable(Exception e) {
+        return buildApiError("BAD_REQUEST", "Invalid input or format.", e.getMessage());
     }
 
     @ExceptionHandler(ForbiddenException.class)

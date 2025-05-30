@@ -39,4 +39,11 @@ public class UserController {
     public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
     }
+
+    @GetMapping("/rating")
+    public List<UserDto> getUsersByRating(@RequestParam(defaultValue = "DESC") String sort,
+                                          @RequestParam(defaultValue = "0") int from,
+                                          @RequestParam(defaultValue = "10") int size) {
+        return userService.getUsersByRating(sort, from, size);
+    }
 }

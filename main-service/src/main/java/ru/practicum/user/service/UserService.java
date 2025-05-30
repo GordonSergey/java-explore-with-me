@@ -11,6 +11,8 @@ public interface UserService {
 
     List<UserDto> getUsers(int from, int size);
 
+    List<UserDto> getUsersByRating(String sort, int from, int size);
+
     UserDto createUser(NewUserRequestDto newUserRequestDto);
 
     void deleteUser(Long id);

@@ -1,10 +1,11 @@
 package ru.practicum.exceptions;
 
-import jakarta.persistence.EntityNotFoundException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-public class EventNotFoundException extends EntityNotFoundException {
-
-    public EventNotFoundException(long id) {
-        super(String.format("Событие с id=%d не найдено.", id));
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class EventNotFoundException extends RuntimeException {
+    public EventNotFoundException(Long eventId) {
+        super("Событие с id " + eventId + " не найдено");
     }
 }

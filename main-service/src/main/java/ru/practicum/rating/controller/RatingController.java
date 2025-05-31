@@ -13,6 +13,7 @@ import ru.practicum.rating.dto.RatingDto;
 import ru.practicum.rating.model.RatingSortType;
 import ru.practicum.rating.service.RatingService;
 import ru.practicum.user.dto.UserDto;
+import ru.practicum.util.Constants;
 
 import java.util.List;
 
@@ -48,8 +49,8 @@ public class RatingController {
 
     @GetMapping("/events/rating")
     public List<EventShortDto> getEventsByRating(@RequestParam(required = false) String sort,
-                                                 @RequestParam(defaultValue = "0") int from,
-                                                 @RequestParam(defaultValue = "10") int size) {
+                                                 @RequestParam(defaultValue = Constants.DEFAULT_FROM_VALUE) int from,
+                                                 @RequestParam(defaultValue = Constants.DEFAULT_SIZE_VALUE) int size) {
         RatingSortType sortType = RatingSortType.from(sort);
         Sort.Direction direction = sortType == RatingSortType.ASC ? Sort.Direction.ASC : Sort.Direction.DESC;
         log.debug("Сортировка событий по рейтингу: {}", direction);
@@ -58,8 +59,8 @@ public class RatingController {
 
     @GetMapping("/users/rating")
     public List<UserDto> getUsersByRating(@RequestParam(required = false) String sort,
-                                          @RequestParam(defaultValue = "0") int from,
-                                          @RequestParam(defaultValue = "10") int size) {
+                                          @RequestParam(defaultValue = Constants.DEFAULT_FROM_VALUE) int from,
+                                          @RequestParam(defaultValue = Constants.DEFAULT_SIZE_VALUE) int size) {
         RatingSortType sortType = RatingSortType.from(sort);
         Sort.Direction direction = sortType == RatingSortType.ASC ? Sort.Direction.ASC : Sort.Direction.DESC;
         log.debug("Сортировка пользователей по рейтингу: {}", direction);

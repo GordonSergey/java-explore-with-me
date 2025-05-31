@@ -28,12 +28,11 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static ru.practicum.event.mapper.EventMapper.toEvent;
 import static ru.practicum.event.mapper.EventMapper.toEventFullDto;
-import static ru.practicum.event.model.EventSort.EVENT_DATE;
-import static ru.practicum.event.model.EventSort.VIEWS;
 import static ru.practicum.location.mapper.LocationMapper.toLocation;
 
 @Service
@@ -94,7 +93,7 @@ public class EventServiceImpl implements EventService {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
 
-        if (event.getInitiator().getId() != userId) {
+        if (!Objects.equals(event.getInitiator().getId(), userId)) {
             throw new ForbiddenException("Только инициатор может изменить событие");
         }
 
@@ -318,7 +317,7 @@ public class EventServiceImpl implements EventService {
 
         PageRequest pageable = PageRequest.of(from / size, size, Sort.by(Sort.Direction.DESC, "rating"));
 
-        List<Event> events = eventRepository.findAllPublishedEvents(pageable); // ← более гибкий метод
+        List<Event> events = eventRepository.findAllPublishedEvents(pageable);
         return events.stream()
                      .map(EventMapper::toEventShortDto)
                      .collect(Collectors.toList());

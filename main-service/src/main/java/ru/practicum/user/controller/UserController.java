@@ -10,6 +10,9 @@ import ru.practicum.user.service.UserService;
 
 import java.util.List;
 
+import static ru.practicum.util.Constants.DEFAULT_FROM_VALUE;
+import static ru.practicum.util.Constants.DEFAULT_SIZE_VALUE;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/users")
@@ -20,8 +23,8 @@ public class UserController {
 
     @GetMapping
     public List<UserDto> getUsers(@RequestParam(required = false) List<Long> ids,
-                                  @RequestParam(defaultValue = "0") int from,
-                                  @RequestParam(defaultValue = "10") int size) {
+                                  @RequestParam(defaultValue = DEFAULT_FROM_VALUE) int from,
+                                  @RequestParam(defaultValue = DEFAULT_SIZE_VALUE) int size) {
         if (ids == null) {
             return userService.getUsers(from, size);
         }
@@ -42,8 +45,8 @@ public class UserController {
 
     @GetMapping("/rating")
     public List<UserDto> getUsersByRating(@RequestParam(defaultValue = "DESC") String sort,
-                                          @RequestParam(defaultValue = "0") int from,
-                                          @RequestParam(defaultValue = "10") int size) {
+                                          @RequestParam(defaultValue = DEFAULT_FROM_VALUE) int from,
+                                          @RequestParam(defaultValue = DEFAULT_SIZE_VALUE) int size) {
         return userService.getUsersByRating(sort, from, size);
     }
 }

@@ -52,7 +52,7 @@ public class EventMapper {
                            .initiator(toUserShortDto(event.getInitiator()))
                            .state(event.getState().toString())
                            .views(event.getViews())
-                           .rating(event.getRating() != null ? event.getRating() : 0) // 🔹 добавлена защита от null
+                           .rating(event.getRating() != null ? event.getRating() : 0)
                            .build();
     }
 
@@ -67,7 +67,7 @@ public class EventMapper {
                             .initiator(toUserShortDto(event.getInitiator()))
                             .paid(event.isPaid())
                             .views(event.getViews())
-                            .rating(event.getRating() != null ? event.getRating() : 0) // 🔹 добавлена защита от null
+                            .rating(event.getRating() != null ? event.getRating() : 0)
                             .build();
     }
 

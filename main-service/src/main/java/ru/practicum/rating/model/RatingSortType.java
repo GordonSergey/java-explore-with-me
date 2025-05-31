@@ -10,7 +10,7 @@ public enum RatingSortType {
     @JsonCreator
     public static RatingSortType from(String value) {
         if (value == null) {
-            return DESC; // ← по умолчанию
+            return DESC;
         }
         try {
             return RatingSortType.valueOf(value.toUpperCase());

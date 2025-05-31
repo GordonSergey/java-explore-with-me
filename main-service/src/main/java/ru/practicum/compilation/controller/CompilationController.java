@@ -9,6 +9,7 @@ import ru.practicum.compilation.dto.CompilationDto;
 import ru.practicum.compilation.dto.NewCompilationDto;
 import ru.practicum.compilation.dto.UpdateCompilationRequestDto;
 import ru.practicum.compilation.service.CompilationService;
+import ru.practicum.util.Constants;
 
 import java.util.List;
 
@@ -21,8 +22,8 @@ public class CompilationController {
 
     @GetMapping("/compilations")
     public List<CompilationDto> getCompilations(@RequestParam(required = false) Boolean pinned,
-                                                @RequestParam(defaultValue = "0") int from,
-                                                @RequestParam(defaultValue = "10") int size) {
+                                                @RequestParam(defaultValue = Constants.DEFAULT_FROM_VALUE) int from,
+                                                @RequestParam(defaultValue = Constants.DEFAULT_SIZE_VALUE) int size) {
         return compilationService.getCompilations(pinned, from, size);
     }
 

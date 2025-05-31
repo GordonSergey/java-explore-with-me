@@ -79,4 +79,7 @@ public class Event {
 
     @Column(nullable = false, columnDefinition = "bigint default 0")
     private Long views = 0L;
+
+    @Column
+    private Integer rating;
 }

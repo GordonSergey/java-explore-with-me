@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.category.dto.NewCategoryDto;
 import ru.practicum.category.service.CategoryService;
+import ru.practicum.util.Constants;
 
 import java.util.List;
 
@@ -18,8 +19,8 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping("/categories")
-    public List<CategoryDto> getCategories(@RequestParam(defaultValue = "0") int from,
-                                           @RequestParam(defaultValue = "10") int size) {
+    public List<CategoryDto> getCategories(@RequestParam(defaultValue = Constants.DEFAULT_FROM_VALUE) int from,
+                                           @RequestParam(defaultValue = Constants.DEFAULT_SIZE_VALUE) int size) {
         return categoryService.getCategories(from, size);
     }
 

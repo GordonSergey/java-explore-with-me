@@ -45,4 +45,12 @@ public class UserServiceImpl implements UserService {
         log.info("Удаление пользователя с ID={}", id);
         userRepository.deleteById(id);
     }
+
+    @Override
+    public List<UserDto> getUsersByRating(String sort, int from, int size) {
+        if ("DESC".equalsIgnoreCase(sort)) {
+            return toUserDto(userRepository.findAllByOrderByRatingDesc(PageRequest.of(from / size, size)));
+        }
+        return toUserDto(userRepository.findAllByOrderByRatingAsc(PageRequest.of(from / size, size)));
+    }
 }

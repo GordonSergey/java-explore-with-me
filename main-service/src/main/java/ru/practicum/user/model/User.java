@@ -27,4 +27,7 @@ public class User {
 
     @Column(nullable = false, unique = true, length = 254)
     private String email;
+
+    @Column
+    private Integer rating;
 }

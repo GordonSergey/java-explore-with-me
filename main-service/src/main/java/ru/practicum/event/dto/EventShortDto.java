@@ -23,4 +23,5 @@ public class EventShortDto {
     private boolean paid;
     private long views;
     private int participantLimit;
+    private Integer rating;
 }

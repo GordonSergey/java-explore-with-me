@@ -3,6 +3,7 @@ package ru.practicum.exceptions;
 import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.category.controller.CategoryController;
 import ru.practicum.compilation.controller.CompilationController;
 import ru.practicum.event.controller.EventController;
+import ru.practicum.rating.controller.RatingController;
 import ru.practicum.request.controller.RequestController;
 import ru.practicum.user.controller.UserController;
 
@@ -21,7 +23,8 @@ import java.time.format.DateTimeFormatter;
         CategoryController.class,
         EventController.class,
         RequestController.class,
-        CompilationController.class
+        CompilationController.class,
+        RatingController.class
 })
 public class ErrorHandler {
 
@@ -31,13 +34,13 @@ public class ErrorHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        return buildApiError("BAD_REQUEST", "Incorrectly made request.", e.getMessage());
+        return buildApiError("BAD_REQUEST", "Неверно составлен запрос.", e.getMessage());
     }
 
     @ExceptionHandler(ValidationRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleValidationRequestException(ValidationRequestException e) {
-        return buildApiError("BAD_REQUEST", "Incorrectly made request.", e.getMessage());
+        return buildApiError("BAD_REQUEST", "Неверно составлен запрос.", e.getMessage());
     }
 
     @ExceptionHandler({
@@ -48,19 +51,25 @@ public class ErrorHandler {
     })
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiError handleEntityNotFoundException(EntityNotFoundException e) {
-        return buildApiError("NOT_FOUND", "The required object was not found.", e.getMessage());
+        return buildApiError("NOT_FOUND", "Не найден запрашиваемый объект.", e.getMessage());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handleConstraintViolationException(ConstraintViolationException e) {
-        return buildApiError("CONFLICT", "Integrity constraint has been violated.", e.getMessage());
+        return buildApiError("CONFLICT", "Нарушено ограничение целостности.", e.getMessage());
+    }
+
+    @ExceptionHandler({IllegalArgumentException.class, HttpMessageNotReadableException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleIllegalOrUnreadable(Exception e) {
+        return buildApiError("BAD_REQUEST", "Неверный ввод или формат.", e.getMessage());
     }
 
     @ExceptionHandler(ForbiddenException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handleForbiddenException(ForbiddenException e) {
-        return buildApiError("FORBIDDEN", "For the requested operation the conditions are not met.", e.getMessage());
+        return buildApiError("FORBIDDEN", "Условия для выполнения операции не соблюдены.", e.getMessage());
     }
 
     private ApiError buildApiError(String status, String reason, String message) {

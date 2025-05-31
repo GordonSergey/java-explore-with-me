@@ -25,4 +25,6 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     void updateRequestStatusByEventIdAndStatus(@Param("event") Event event,
                                                @Param("searchStatus") RequestStatus searchStatus,
                                                @Param("newStatus") RequestStatus newStatus);
+
+    List<Request> findAllByRequesterIdAndEventIdAndStatus(Long userId, Long eventId, RequestStatus requestStatus);
 }

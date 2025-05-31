@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.event.dto.*;
 import ru.practicum.event.service.EventService;
+import ru.practicum.util.Constants;
 
 import java.util.List;
 
@@ -28,8 +29,8 @@ public class EventController {
 
     @GetMapping("/users/{userId}/events")
     public List<EventShortDto> getUserEvents(@PathVariable @Positive Long userId,
-                                             @RequestParam(defaultValue = "0") @PositiveOrZero int from,
-                                             @RequestParam(defaultValue = "10") @Positive int size) {
+                                             @RequestParam(defaultValue = Constants.DEFAULT_FROM_VALUE) @PositiveOrZero int from,
+                                             @RequestParam(defaultValue = Constants.DEFAULT_SIZE_VALUE) @Positive int size) {
         return eventService.getEvents(userId, from, size);
     }
 
@@ -52,8 +53,8 @@ public class EventController {
                                              @RequestParam(required = false) List<Long> categories,
                                              @RequestParam(required = false) String rangeStart,
                                              @RequestParam(required = false) String rangeEnd,
-                                             @RequestParam(defaultValue = "0") @PositiveOrZero int from,
-                                             @RequestParam(defaultValue = "10") @Positive int size) {
+                                             @RequestParam(defaultValue = Constants.DEFAULT_FROM_VALUE) @PositiveOrZero int from,
+                                             @RequestParam(defaultValue = Constants.DEFAULT_SIZE_VALUE) @Positive int size) {
         return eventService.getEventsByAdmin(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 
@@ -71,8 +72,8 @@ public class EventController {
                                                   @RequestParam(required = false) String rangeEnd,
                                                   @RequestParam(defaultValue = "false") boolean onlyAvailable,
                                                   @RequestParam(required = false) String sort,
-                                                  @RequestParam(defaultValue = "0") @PositiveOrZero int from,
-                                                  @RequestParam(defaultValue = "10") @Positive int size,
+                                                  @RequestParam(defaultValue = Constants.DEFAULT_FROM_VALUE) @PositiveOrZero int from,
+                                                  @RequestParam(defaultValue = Constants.DEFAULT_SIZE_VALUE) @Positive int size,
                                                   HttpServletRequest request) {
         return eventService.getPublishedEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable,
                                                sort, from, size, request);
@@ -82,5 +83,12 @@ public class EventController {
     public EventFullDto getPublishedEventById(@PathVariable @Positive Long id,
                                               HttpServletRequest request) {
         return eventService.getPublishedEventById(id, request);
+    }
+
+    @GetMapping("/top-rated")
+    public List<EventShortDto> getTopRatedEvents(
+            @RequestParam(defaultValue = Constants.DEFAULT_FROM_VALUE) int from,
+            @RequestParam(defaultValue = Constants.DEFAULT_SIZE_VALUE) int size) {
+        return eventService.getTopRatedPublishedEvents(from, size);
     }
 }

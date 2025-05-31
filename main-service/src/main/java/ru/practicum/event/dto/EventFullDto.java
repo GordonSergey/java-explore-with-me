@@ -30,4 +30,5 @@ public class EventFullDto {
     private UserShortDto initiator;
     private String state;
     private long views;
+    private Integer rating;
 }

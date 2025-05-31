@@ -28,5 +28,9 @@ public interface EventService {
                                            String rangeStart, String rangeEnd, boolean onlyAvailable,
                                            String sort, int from, int size, HttpServletRequest request);
 
+
     EventFullDto getPublishedEventById(Long eventId, HttpServletRequest request);
+
+    List<EventShortDto> getTopRatedPublishedEvents(int from, int size);
+
 }

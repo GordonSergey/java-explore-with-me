@@ -115,7 +115,7 @@ public class RatingServiceImpl implements RatingService {
 
         if (ratings.isEmpty()) {
             log.warn("Попытка удалить рейтинг, но рейтинг отсутствует. Возвращаем актуальные данные.");
-            return EventMapper.toEventFullDto(event);
+            throw new ValidationRequestException("Попытка удалить рейтинг, но рейтинг отсутствует.");
         }
 
         List<Long> ids = ratings.stream().map(Rating::getId).collect(Collectors.toList());

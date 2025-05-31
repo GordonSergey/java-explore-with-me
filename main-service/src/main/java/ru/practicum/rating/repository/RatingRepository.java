@@ -19,7 +19,7 @@ public interface RatingRepository extends JpaRepository<Rating, Long> {
 
     @Query(value = "SELECT COUNT(DISTINCT er.user_id) FROM events_rating er " +
             "JOIN events e ON e.id = er.event_id " +
-            "WHERE e.user_id = ?1 AND er.rating = ?2", nativeQuery = true)
+            "WHERE e.initiator_id = ?1 AND er.rating = ?2", nativeQuery = true)
     Long countRatingByUserIdAndRating(Long userId, String ratingType);
 
     List<Rating> findAllByEventIdAndUserIdAndRating(Long eventId, Long userId, RatingType ratingType);

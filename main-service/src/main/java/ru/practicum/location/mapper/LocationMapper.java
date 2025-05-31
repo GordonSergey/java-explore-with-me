@@ -3,6 +3,7 @@ package ru.practicum.location.mapper;
 import lombok.NoArgsConstructor;
 import ru.practicum.location.dto.LocationDto;
 import ru.practicum.location.model.Location;
+import static ru.practicum.location.mapper.LocationMapper.toLocation;
 
 @NoArgsConstructor
 public class LocationMapper {

@@ -33,7 +33,6 @@ public class RatingController {
     }
 
     @PatchMapping("/users/{userId}/events/{eventId}/rating/{ratingId}")
-    @ResponseStatus(HttpStatus.OK)
     public EventFullDto updateRating(@PathVariable Long userId,
                                      @PathVariable Long eventId,
                                      @PathVariable Long ratingId,
@@ -48,7 +47,6 @@ public class RatingController {
     }
 
     @GetMapping("/events/rating")
-    @ResponseStatus(HttpStatus.OK)
     public List<EventShortDto> getEventsByRating(@RequestParam(required = false) String sort,
                                                  @RequestParam(defaultValue = "0") int from,
                                                  @RequestParam(defaultValue = "10") int size) {
@@ -59,7 +57,6 @@ public class RatingController {
     }
 
     @GetMapping("/users/rating")
-    @ResponseStatus(HttpStatus.OK)
     public List<UserDto> getUsersByRating(@RequestParam(required = false) String sort,
                                           @RequestParam(defaultValue = "0") int from,
                                           @RequestParam(defaultValue = "10") int size) {

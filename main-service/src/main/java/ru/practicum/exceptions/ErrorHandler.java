@@ -34,13 +34,13 @@ public class ErrorHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        return buildApiError("BAD_REQUEST", "Incorrectly made request.", e.getMessage());
+        return buildApiError("BAD_REQUEST", "Неверно составлен запрос.", e.getMessage());
     }
 
     @ExceptionHandler(ValidationRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleValidationRequestException(ValidationRequestException e) {
-        return buildApiError("BAD_REQUEST", "Incorrectly made request.", e.getMessage());
+        return buildApiError("BAD_REQUEST", "Неверно составлен запрос.", e.getMessage());
     }
 
     @ExceptionHandler({
@@ -51,25 +51,25 @@ public class ErrorHandler {
     })
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiError handleEntityNotFoundException(EntityNotFoundException e) {
-        return buildApiError("NOT_FOUND", "The required object was not found.", e.getMessage());
+        return buildApiError("NOT_FOUND", "Не найден запрашиваемый объект.", e.getMessage());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handleConstraintViolationException(ConstraintViolationException e) {
-        return buildApiError("CONFLICT", "Integrity constraint has been violated.", e.getMessage());
+        return buildApiError("CONFLICT", "Нарушено ограничение целостности.", e.getMessage());
     }
 
     @ExceptionHandler({IllegalArgumentException.class, HttpMessageNotReadableException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleIllegalOrUnreadable(Exception e) {
-        return buildApiError("BAD_REQUEST", "Invalid input or format.", e.getMessage());
+        return buildApiError("BAD_REQUEST", "Неверный ввод или формат.", e.getMessage());
     }
 
     @ExceptionHandler(ForbiddenException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handleForbiddenException(ForbiddenException e) {
-        return buildApiError("FORBIDDEN", "For the requested operation the conditions are not met.", e.getMessage());
+        return buildApiError("FORBIDDEN", "Условия для выполнения операции не соблюдены.", e.getMessage());
     }
 
     private ApiError buildApiError(String status, String reason, String message) {

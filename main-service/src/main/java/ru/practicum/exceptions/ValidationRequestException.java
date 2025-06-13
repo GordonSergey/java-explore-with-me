@@ -1,7 +1,10 @@
 package ru.practicum.exceptions;
 
-public class ValidationRequestException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
+@ResponseStatus(HttpStatus.CONFLICT)
+public class ValidationRequestException extends RuntimeException {
     public ValidationRequestException(String message) {
         super(message);
     }

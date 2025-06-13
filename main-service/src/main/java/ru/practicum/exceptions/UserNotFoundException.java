@@ -1,10 +1,11 @@
 package ru.practicum.exceptions;
 
-import jakarta.persistence.EntityNotFoundException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-public class UserNotFoundException extends EntityNotFoundException {
-
-    public UserNotFoundException(Long id) {
-        super(String.format("Пользователь с id=%d не найден.", id));
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class UserNotFoundException extends RuntimeException {
+    public UserNotFoundException(Long userId) {
+        super("Пользователь с id " + userId + " не найден");
     }
 }

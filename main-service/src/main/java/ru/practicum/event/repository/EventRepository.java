@@ -57,5 +57,18 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     boolean existsByCategoryId(Long categoryId);
 
+    @Query("SELECT e FROM Event e WHERE e.state = 'PUBLISHED' AND e.rating > 0 ORDER BY e.rating DESC")
+    List<Event> findTopPublishedEventsByRating(Pageable pageable);
+
+    @Query("SELECT e FROM Event e WHERE e.state = 'PUBLISHED'")
+    List<Event> findAllPublishedEvents(Pageable pageable);
+
+    @Query("SELECT e FROM Event e WHERE e.state = 'PUBLISHED' ORDER BY e.rating ASC")
+    List<Event> findAllPublishedEventsOrderByRatingAsc(Pageable pageable);
+
+    @Query("SELECT e FROM Event e WHERE e.state = 'PUBLISHED' ORDER BY e.rating DESC")
+    List<Event> findAllPublishedEventsOrderByRatingDesc(Pageable pageable);
+
     Optional<Event> findByIdAndState(Long eventId, EventState state);
+
 }

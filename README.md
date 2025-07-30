@@ -8,7 +8,6 @@
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen.svg)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13-blue.svg)
 ![Docker](https://img.shields.io/badge/Docker-Ready-lightblue.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 ---
 
@@ -127,15 +126,6 @@ mvn test
 - `GET /ratings` — получить рейтинги авторов
 
 Полные спецификации: см. файлы `ewm-main-service-spec.json`, `ewm-stats-service-spec.json`.
-
----
-
-## ✅ TODO
-
-- Авторизация с использованием JWT
-- Развёртывание на Heroku / Render / AWS
-- CI/CD пайплайны на GitHub Actions
-- Реализация frontend-интерфейса
 
 ---
 
